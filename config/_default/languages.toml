@@ -1,0 +1,13 @@
+[en]
+  title = "Larrylvzg"
+  languageName = "English"
+  weight = 1
+  languagedir = "ltr"
+  contentdir = "content/en"
+
+[zh]
+  title = "Larrylvzg"
+  languageName = "中文"
+  weight = 2
+  languagedir = "ltr"
+  contentdir = "content/zh"
