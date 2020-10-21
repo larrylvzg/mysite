@@ -1,6 +1,6 @@
 module github.com/larrylvzg/mysite
 
-replace github.com/larrylvzg/hugo-theme-zzo => /Users/larry/Documents/Projects/hugo-theme-zzo
+// replace github.com/larrylvzg/hugo-theme-zzo => /Users/larry/Documents/Projects/hugo-theme-zzo
 
 go 1.15
 

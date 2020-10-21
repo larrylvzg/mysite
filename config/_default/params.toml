@@ -107,9 +107,9 @@ commento = false
 
 [gitment]          # Gitment is a comment system based on GitHub issues. see https://github.com/imsun/gitment
   owner = "larrylvzg"              # Your GitHub ID
-  repo = ""               # The repo to store comments
-  clientId = ""           # Your client ID
-  clientSecret = ""       # Your client secret
+  repo = "comments"               # The repo to store comments
+  clientId = "d65967837af7d1f143ad"           # Your client ID
+  clientSecret = "512816d62f4cf40ce2eb0adb688de6c12757968d"       # Your client secret
 
 [utterances]       # https://utteranc.es/
   owner = ""              # Your GitHub ID
