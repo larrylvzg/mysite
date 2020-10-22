@@ -6,7 +6,7 @@ draft: false
 hideToc: false
 enableToc: true
 enableTocContent: true
-author: Choi
+author: larrylvzg
 authorEmoji: 🤖
 tags:
 - markdown

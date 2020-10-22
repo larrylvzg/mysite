@@ -1,5 +1,5 @@
 ---
-author: "Hugo Authors"
+author: "larrylvzg"
 title: "Emoji Support"
 date: 2019-12-16T12:00:06+09:00
 description: "Guide to emoji usage in Hugo"
@@ -7,7 +7,6 @@ draft: false
 hideToc: false
 enableToc: true
 enableTocContent: false
-author: Kim
 authorEmoji: 👻
 tags: 
 - emoji

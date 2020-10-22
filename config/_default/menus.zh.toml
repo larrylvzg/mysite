@@ -4,11 +4,11 @@
   url = "about"
   weight = 1
 
-#[[main]]
-#  identifier = "archive"
-#  name = "归档"
-#  url = "archive"
-#  weight = 2
+[[main]]
+  identifier = "notes"
+  name = "笔记"
+  url = "notes"
+  weight = 2
 
 #[[main]]
 #  identifier = "gallery"

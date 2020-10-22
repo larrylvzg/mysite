@@ -33,6 +33,12 @@
 #  url = "gallery/photo"
 
 [[main]]
+  identifier = "notes"
+  name = "Notes"
+  url = "notes"
+  weight = 4
+
+[[main]]
   identifier = "posts"
   name = "Posts"
   url = "posts"
