@@ -2,6 +2,8 @@
 title: "Understanding Cross-Origin Resource Sharing (CORS)"
 date: 2020-10-22T20:11:41+08:00
 draft: false
+tags:
+- web
 ---
 
 ## What is CORS
