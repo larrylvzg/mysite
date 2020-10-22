@@ -4,4 +4,4 @@ module github.com/larrylvzg/mysite
 
 go 1.15
 
-require github.com/larrylvzg/hugo-theme-zzo v0.0.0-20201022055409-69b951156027 // indirect
+require github.com/larrylvzg/hugo-theme-zzo v0.0.0-20201022061820-20dd96baf974 // indirect
