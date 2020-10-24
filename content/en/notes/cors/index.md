@@ -36,14 +36,14 @@ This section lists the HTTP response headers that servers send back for access c
 
 ### Access-Control-Allow-Origin
 A returned resource may have one Access-Control-Allow-Origin header, with the following syntax:
-> Access-Control-Allow-Origin: <origin> | *
+> Access-Control-Allow-Origin: `<origin> | *`
 
 **Access-Control-Allow-Origin** specifies either a single origin, which tells browsers to allow that origin to access the resource; or else — for requests without credentials — the "*" wildcard, to tell browsers to allow any origin to access the resource.
 
 For example, to allow code from the origin `https://mozilla.org` to access the resource, you can specify:
 
 > Access-Control-Allow-Origin: `https://mozilla.org`
-> Vary: Origin
+> Vary: `Origin`
 
 If the server specifies a single origin (that may dynamically change based on the requesting origin as part of a white-list) rather than the "*" wildcard, then the server should also include Origin in the Vary response header — to indicate to clients that server responses will differ based on the value of the Origin request header.
 
@@ -54,7 +54,8 @@ The Access-Control-Expose-Headers header lets a server whitelist headers that Ja
 
 For example, the following:
 
-> Access-Control-Expose-Headers: X-My-Custom-Header, X-Another-Custom-Header
+> Access-Control-Expose-Headers: `X-My-Custom-Header, X-Another-Custom-Header`
+
 …would allow the X-My-Custom-Header and X-Another-Custom-Header headers to be exposed to the browser.
 
 ### Access-Control-Max-Age

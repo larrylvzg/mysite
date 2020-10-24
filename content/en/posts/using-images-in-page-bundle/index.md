@@ -1,8 +1,8 @@
 ---
 author: "larrylvzg"
-title: "Leaf page bundle with page resources"
+title: "Page Bundle Image References"
 date: 2020-10-20T12:00:06+09:00
-description: "Testing for the leaf bundle page resources"
+description: "Regarding to how to reference images in the page bundle"
 draft: false
 hideToc: false
 enableToc: true
@@ -14,12 +14,12 @@ tags:
 ---
 
 
-In old days, when you want to put a image in your page, you have to place this image into the **static** folder in your hugo project. It will be hard to distinguish as the quantity of your pages and images increasing.
+In previous version of `Hugo`, when you want to reference a image file on your page, you have to place this image file into the **static** folder of your hugo project. It would be difficult to distinguish over time.
 
-Hugo page bundle is mainly used for the content organization. With this feature, You can place the page resources like images, documents(pdf, doc...) together with content(markdown file) itself, so your contents would be better for maintenence.
+`Page Bundle` is mainly used for the content organization. With this feature, You can place the page resources like images, documents(pdf, doc...) together with content file(.md, .html etc) itself, so your content structure would be more intuitive.
 
 ## The display of result for this shortcode
-{{< pagebundle/img "**.jpg" "Those cupcakes are way overcooked!" >}}
+{{< pagebundle/img "images/deer.jpg" "A beautiful deer!" >}}
 
 ## How to organize your content with images.
 #### Directory structure:
