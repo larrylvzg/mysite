@@ -3,7 +3,7 @@ logoType = "short" # long, short
 description = "To live is to learn, not learn to live."
 custom_css = []
 custom_js = []
-useFaviconGenerator = false # https://www.favicon-generator.org/
+useFaviconGenerator = true # https://www.favicon-generator.org/
 meta_image = ""
 themecolor = ""
 
