@@ -38,11 +38,11 @@ Network: 1 NAT, 1 HostOnly vboxnet0
 分区 | 文件系统 | 容量 | 备注
 ---- | -------- | ----- | ----
 /boot | fat32  | 500M | EFI系统分区，也就是ESP
-/swap |        | 1G |
+swap |         | 1G   |
 /     | btrfs  | 剩余所有空间 |
 
 在liveCD环境下，列出机器上安装的所有块设备，然后执行 parted 分区程序：
-```bash
+```console
 livecd ~ # lsblk 
 NAME  MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 loop0   7:0    0  388M  1 loop /mnt/livecd
@@ -56,7 +56,7 @@ Welcome to GNU Parted! Type 'help' to view a list of commands.
 ```
 
 这样，我们就进入了 parted 分区程序，尝试输入 `print` 列出所有分区：
-```bash
+```console
 (parted) print                                                            
 Error: /dev/sda: unrecognised disk label
 Model: ATA VBOX HARDDISK (scsi)                                           
@@ -68,12 +68,12 @@ Disk Flags:
 ```
 
 出现了预期的错误，因为这个磁盘是完全空白的，我们下一步是给磁盘添加 `label`:
-```bash
+```console
 (parted) mklabel gpt
 ```
 
 接着，按照我们的规划来分区：
-```bash
+```console
 (parted) unit MB 
 # 单位设置为 MB                                                         
 (parted) mkpart primary 1 500                                             
@@ -98,7 +98,7 @@ Number  Start   End       Size      File system  Name     Flags
 ```
 
 你可以从上看到每个分区的编号和名称Primary。但是还没有格式化和分区的命名，接下来就做这些：
-```bash
+```console
 (parted) name 1 boot
 (parted) set 1 boot on # UEFI启动模式下，parted自动将分区标记为ESP                          
 (parted) name 2 swap                                                      
@@ -107,7 +107,7 @@ Number  Start   End       Size      File system  Name     Flags
 ```
 
 再次列出所有磁盘：
-```bash
+```console
 livecd ~ # lsblk                                                          
 NAME   MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 loop0    7:0    0  388M  1 loop /mnt/livecd
@@ -119,7 +119,7 @@ sr0     11:0    1  425M  0 rom  /mnt/cdrom
 ```
 
 依次格式化：
-```bash
+```console
 livecd ~ # mkfs.vfat /dev/sda1
 mkfs.fat 4.1 (2017-01-24)
 livecd ~ # mkswap /dev/sda2
@@ -149,17 +149,17 @@ Devices:
 ```
 
 现在，我们将这些分区 mount 到live环境，
-```
-# mount /dev/sda3 /mnt/gentoo
-# mkdir /mnt/gentoo/boot
-# mount /dev/sda1 /mnt/gentoo/boot
+```console
+mount /dev/sda3 /mnt/gentoo
+mkdir /mnt/gentoo/boot
+mount /dev/sda1 /mnt/gentoo/boot
 ```
 
 `根`分区被mount到了liveCD环境的 `/mnt/gentoo`目录， `boot`分区被mount到了liveCD环境的`/mnt/gentoo/boot`目录。
 
 ## 安装Stage 3 存档文件和Chroot
 将我们在准备工作中下载的Stage 3 tarball文件复制到`/mnt/gentoo`目录下，然后解开。
-```bash
+```console
 cd /mnt/gentoo
 tar xpvf stage3-*.tar.xz --xattrs-include='*.*' --numeric-owner
 ```
@@ -169,8 +169,8 @@ rm stage3-*.tar.xz
 
 ### 配置编译器选项
 打开配置文件：
-```bash
-# nano -w /mnt/gentoo/etc/portage/make.conf
+```console
+nano -w /mnt/gentoo/etc/portage/make.conf
 ```
 
 基本配置如下：
@@ -188,50 +188,48 @@ MAKEOPTS="-j2"
 ### Chroot
 #### 配置镜像源地址
 可以使用工具来选择地理位置最近的源，
-```
-# mirrorselect -i -o >> /mnt/gentoo/etc/portage/make.conf
+```console
+mirrorselect -i -o >> /mnt/gentoo/etc/portage/make.conf
 ```
 
 #### Gentoo ebuild 仓库
 创建仓库目录并复制配置文件：
-```
-# mkdir --parents /mnt/gentoo/etc/portage/repos.conf
-# cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
+```console
+mkdir --parents /mnt/gentoo/etc/portage/repos.conf
+cp /mnt/gentoo/usr/share/portage/config/repos.conf /mnt/gentoo/etc/portage/repos.conf/gentoo.conf
 ```
 
 #### 复制DNS配置
 可以确保进入新环境后，网络还是正常的。
-```
-# cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
+```console
+cp --dereference /etc/resolv.conf /mnt/gentoo/etc/
 ```
 
 #### 挂载必要的文件系统
-```
-# mount --types proc /proc /mnt/gentoo/proc
-# mount --rbind /sys /mnt/gentoo/sys
-# mount --make-rslave /mnt/gentoo/sys
-# mount --rbind /dev /mnt/gentoo/dev
-# mount --make-rslave /mnt/gentoo/dev
+```console
+mount --types proc /proc /mnt/gentoo/proc
+mount --rbind /sys /mnt/gentoo/sys
+mount --make-rslave /mnt/gentoo/sys
+mount --rbind /dev /mnt/gentoo/dev
+mount --make-rslave /mnt/gentoo/dev
 ```
 
 #### 进入新的root环境
-```
-# chroot /mnt/gentoo /bin/bash
-# source /etc/profile
-# export PS1="(chroot) ${PS1}"
-(chroot) livecd / # 
+```console
+chroot /mnt/gentoo /bin/bash
+source /etc/profile
+export PS1="(chroot) ${PS1}"
 ```
 
 #### 挂载boot分区
-```
-# mount /dev/sda1 /boot
-mount: /boot: /dev/sda1 already mounted on /boot.
+```console
+mount /dev/sda1 /boot
 ```
 
 ### 配置Portage
 #### 安装Gentoo ebuild库
-```bash
-(chroot) livecd / # emerge-webrsync 
+``` console
+emerge-webrsync 
 !!! Section 'gentoo' in repos.conf has location attribute set to nonexistent directory: '/var/db/repos/gentoo'
 !!! Invalid Repository Location (not a dir): '/var/db/repos/gentoo'
 Fetching most recent snapshot ...
@@ -265,14 +263,12 @@ Cleaning up ...
  * IMPORTANT: 7 news items need reading for repository 'gentoo'.
  * Use eselect news read to view new items.
 
-(chroot) livecd / # 
-(chroot) livecd / # 
 ```
 
 #### 选择Profile
 查看Profile列表：
-```bash
-(chroot) livecd / # eselect profile list
+```console
+eselect profile list
 Available profile symlink targets:
   [1]   default/linux/amd64/17.1 (stable)
   [2]   default/linux/amd64/17.1/selinux (stable)
@@ -293,16 +289,16 @@ Available profile symlink targets:
   [17]  default/linux/amd64/17.0/hardened (stable)
   ```
 
-  这里我选择[14]  default/linux/amd64/17.1/systemd (stable):
-  ```bash
-  (chroot) livecd / # eselect profile set 14
-  ```
+这里我选择[14]  default/linux/amd64/17.1/systemd (stable):
+```console
+eselect profile set 14
+```
 
 #### 更新@world
-  执行命令：
-  ```bash
-  emerge --ask --verbose --update --deep --newuse @world
-  ```
+执行命令：
+```console
+emerge --ask --verbose --update --deep --newuse @world
+```
 
 #### (可选)ACCEPT_LICENSE
 修改`/etc/portage/make.conf`文件，`*`代表接受所有类型的license.
@@ -312,23 +308,23 @@ ACCEPT_LICENSE="*"
 
 ### 时区
 查看系统可用的时区：
-```bash
+```console
 ls /usr/share/zoneinfo
 ```
 
 设置时区为"Asia/Shanghai":
-```bash
+```console
 echo "Asia/Shanghai" > /etc/timezone
 ```
 
 下一步重新配置`sys-libs/timezone-data`, 它将根据`/etc/timezone`的内容去更新`/etc/localtime`文件。
-```bash
+```console
 emerge --config sys-libs/timezone-data
 ```
 
 ### 语言
 支持的语言必须定义在`/etc/locale.gen`文件中：
-```bash
+```console
 nano -w /etc/locale.gen
 ```
 
@@ -339,8 +335,8 @@ zh_CN.UTF-8 UTF-8
 ```
 
 然后执行`locale-gen`:
-```bash
-locale-gen 
+```console
+# locale-gen 
  * Generating 3 locales (this might take a while) with 2 jobs
  *  (1/3) Generating en_US.UTF-8 ...                                                                                                            [ ok ]
  *  (2/3) Generating zh_CN.UTF-8 ...                                                                                                            [ ok ]
@@ -350,8 +346,8 @@ locale-gen
 ```
 
 系统语言设置，查看语言列表：
-```bash
-eselect locale list
+```console
+# eselect locale list
 /usr/bin/locale: Cannot set LC_CTYPE to default locale: No such file or directory
 Available targets for the LANG variable:
   [1]   C
@@ -366,12 +362,106 @@ eselect locale set 4
 ```
 
 现在重新加载环境：
-```bash
+```console
 env-update && source /etc/profile && export PS1="(chroot) ${PS1}"
 ```
 
+## 编译内核
+针对基于amd64-系统的Gentoo，建议使用包 `sys-kernel/gentoo-sources`.
+```console
+emerge --ask sys-kernel/gentoo-sources
+```
 
+这将在/usr/src/中安装Linux内核源码，并有一个符号连接叫作linux将指向安装的内核源码：
+```console
+(chroot) livecd / # ls -l /usr/src/linux
+lrwxrwxrwx 1 root root 19 Nov  2 09:23 /usr/src/linux -> linux-5.4.72-gentoo
+```
 
+安装`genkernel`:
+```console
+emerge genkernel
+```
 
+接下来，编辑/etc/fstab文件来使包含有第二个值为/boot/的那条的第一个值指向到正确的设备。
+```console
+nano -w /etc/fstab
+```
 
+```
+/dev/sda1   /boot   vfat    defaults  0 0
+```
 
+{{< notice info >}}
+在Gentoo将来的安装中，还要再配置一次/etc/fstab。现在只需要正确设置/boot来让genkernel应用程序读到相应的配置。
+{{< /notice >}}
+
+开始编译：
+```console
+genkernel all
+```
+
+{{< notice info >}}
+使用genkernel。它将自动配置并编译内核。
+
+genkernel配置内核的工作原理几乎和安装CD配置的内核完全一致。也就是说当使用genkernel建立内核，系统通常将在引导时检测全部硬件，就像安装CD所做的。因为genkernel不需要任何手动内核配置，它对于那些不能轻松的编译他们自动内核的用户来说是一个理想的解决方案。
+
+运行`genkernel all`来编译内核源码。值得注意的是，使用genkernel编译一个内核将支持几乎全部的硬件，这将使编译过程需要一阵子来完成！
+{{< /notice >}}
+
+## 配置系统
+### 创建/etc/fstab文件
+/etc/fstab文件使用一种特殊语法格式。每行都包含六个字段。这些字段之间由空白键（空格键，tab键，或者两者混合使用）分隔。每个字段都有自己的含意：
+1. 第一个字段显示要挂载的特殊 block 设备或远程文件系统。 有几种设备标识符可用于特殊块设备节点，包括设备文件路径，文件系统标签，UUID，分区标签以及UUID。
+2. 第二个字段是分区挂载点，也就是分区应该挂载到的地方
+3. 第三个字段给出分区所用的文件系统
+4. 第四个字段给出的是挂载分区时mount命令所用的挂载选项。由于每个文件系统都有自己的挂载选项，我们建议你阅读mount手册（man mount）以获得所有挂载选项的列表。多个挂载选项之间是用逗号分隔的。
+5. 第五个字段是给dump使用的，用以决定这个分区是否需要dump。一般情况下，你可以把该字段设为0（零）。
+6. 第六个字段是给fsck使用的，用以决定系统非正常关机之后文件系统的检查顺序。根文件系统应该为1，而其它的应该为2（如果不需要文件系统自检的话可以设为0）。
+
+```console
+nano -w /etc/fstab
+```
+
+```
+/dev/sda1   /boot   vfat    defaults                  0 0
+/dev/sda2   none         swap    sw                   0 0
+/dev/sda3   /            btrfs    noatime             0 1
+/dev/cdrom  /mnt/cdrom   auto    noauto,user          0 0
+```
+
+### 主机名、域名信息
+这两个配置后面可以重新修改的，先随便设置一下即可。
+```console
+nano -w /etc/conf.d/hostname
+# 设置主机名变量，选择主机名
+hostname="tux"
+
+nano -w /etc/conf.d/net
+# 设定dns_domain的变量值为你的域名
+dns_domain_lo="homenetwork"
+```
+
+### 安装DHCP客户端
+```console
+emerge dhcpcd
+```
+
+### Grub 2
+```console
+echo 'GRUB_PLATFORMS="efi-64"' >> /etc/portage/make.conf
+emerge --ask sys-boot/grub:2
+grub-install --target=x86_64-efi --efi-directory=/boot
+grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+### 重启
+现在可以退出chroot环境，卸载相关的文件系统：
+```
+exit
+umount -l /mnt/gentoo/dev{/shm,/pts,}
+umount -l /mnt/gentoo{/boot,/proc,}
+shutdown now
+```
+
+再次启动虚拟机后，就会直接从虚拟硬盘启动系统了。到此，gentoo linux基本已经安装到虚拟机了。
