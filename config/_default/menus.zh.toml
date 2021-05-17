@@ -5,24 +5,14 @@
   weight = 1
 
 [[main]]
-  identifier = "notes"
-  name = "笔记"
-  url = "notes"
-  weight = 2
-
-#[[main]]
-#  identifier = "gallery"
-#  name = "相册"
-# url = "gallery"
-#  weight = 3
-    
-#[[main]]
-#  parent = "gallery"
-#  name = "fiverr"
-#  url = "gallery/mine"
-
-[[main]]
   identifier = "posts"
   name = "文章"
   url = "posts"
-  weight = 4
+  weight = 2
+
+[[main]]
+  identifier = "notes"
+  name = "笔记"
+  url = "notes"
+  weight = 3
+

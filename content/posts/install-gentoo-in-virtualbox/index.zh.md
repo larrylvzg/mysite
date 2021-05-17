@@ -32,7 +32,8 @@ Network: 1 NAT, 1 HostOnly vboxnet0
 2. 分区并格式化文件系统
 
 我们正式开始吧！首先，设置好虚拟机从 Minimal Installation CD 启动进入gentoo live环境。
-{{< pagebundle/img "images/start-gentoo-livecd.png" "启动 Gentoo liveCD" >}}
+
+![启动 Gentoo liveCD](start-gentoo-livecd.png "启动 Gentoo liveCD")
 
 为顺应未来的趋势，我将机器主板固件设置为UEFI, 磁盘分区表类型为GPT, 分区规划如下：
 分区 | 文件系统 | 容量 | 备注
